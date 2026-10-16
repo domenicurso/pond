@@ -26,6 +26,7 @@ import { reloadSaves, useSaves } from "@/features/saves/pool";
 import type { Save } from "@/features/saves/types";
 import { keywordScopesFromPrefs, useRetrievalOverlay } from "@/features/search";
 import { usePrefs } from "@/shared/state/prefs";
+import { useTwitterLibraryQuery } from "./use-twitter-library-query";
 
 /** Long enough to span a pause between keystrokes, so results swap once typing stops. */
 const KEYWORD_DEBOUNCE_MS = 250;
@@ -33,7 +34,7 @@ const KEYWORD_DEBOUNCE_MS = 250;
 export function useNarrowedSaves(mode: SaveListMode, sourceFilter: string) {
   const saves = useSaves();
   const recents = useRecents();
-  const query = useEffectiveFilterQuery();
+  const query = useTwitterLibraryQuery(useEffectiveFilterQuery(), mode);
   const keywords = useSearchText();
   const searchScope = useSearchScope();
   const sortKey = useSortKey();

@@ -163,6 +163,15 @@ export const settingsQueries = {
     PrefsPatchParamsSchema,
     async (params): Promise<QueryResult<"settings.setPrefs">> => {
       const next = await setPrefs(params);
+      if ("sync" in params) {
+        const { enforceTwitterDownloadSelection } = await import(
+          "../../core/pipeline/twitter-download-selection"
+        );
+        const { cancelSaveIngest } = await import(
+          "../../core/pipeline/reconciler-client"
+        );
+        await enforceTwitterDownloadSelection(cancelSaveIngest);
+      }
       if ("preferences" in params) await syncShellChrome();
       if (params.window && "appIcon" in params.window) {
         const { applyAppIcon } = await import("../../core/app-icon");

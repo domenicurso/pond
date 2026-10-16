@@ -1,6 +1,7 @@
 import type { LibrarySidebarCounts } from "@shared/sidebar-counts";
 import { useEffect, useState } from "react";
 import { useRecents } from "@/features/saves";
+import { subscribePrefsSnapshot } from "@/shared/state/prefs";
 
 const EMPTY: LibrarySidebarCounts = {
   library: 0,
@@ -50,9 +51,11 @@ export function useSidebarCounts(): LibrarySidebarCounts {
     };
     void refresh();
     const off = window.pond.onSyncAction(schedule);
+    const offPrefs = subscribePrefsSnapshot(schedule);
     return () => {
       active = false;
       off();
+      offPrefs();
       if (timer) clearTimeout(timer);
     };
   }, [recentKey]);
