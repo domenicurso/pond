@@ -1,4 +1,9 @@
-import { SOURCES, type Source } from "@pond/schema/db";
+import {
+  SOURCES,
+  type Source,
+  type TwitterSyncPreferences,
+} from "@pond/schema/db";
+import { TwitterSyncPreferencesSchema } from "@shared/twitter-sync";
 import { useSelector } from "@tanstack/react-store";
 import { Store } from "@tanstack/store";
 import { useEffect } from "react";
@@ -16,6 +21,7 @@ export interface AccountRow {
   avatarUrl?: string | null;
   addedAt: string;
   sync: {
+    twitter?: TwitterSyncPreferences;
     lastSyncedAt: string | null;
     lastError: string | null;
     knownCount: number;
@@ -37,6 +43,7 @@ const AccountsReplySchema = z
           addedAt: z.string().catch(""),
           sync: z
             .object({
+              twitter: TwitterSyncPreferencesSchema.optional(),
               lastSyncedAt: z.string().nullable().catch(null),
               lastError: z.string().nullable().catch(null),
               knownCount: z.number().catch(0),

@@ -26,7 +26,7 @@ import {
 } from "../../core/library-query";
 import { libraryRetrievalInput } from "../../core/library-retrieval";
 import { getPrefs } from "../../core/prefs";
-import { querySidebarCounts } from "../../core/sidebar-counts";
+import { queryConfiguredSidebarCounts } from "../../core/sidebar-visibility";
 import type { Db } from "../../db";
 import { getDb } from "../../db";
 import { resolvePaths } from "../../paths";
@@ -113,7 +113,7 @@ export const savesReadQueries = {
       const ids =
         recentIds ??
         (await getPrefs()).saveRecents.entries.map((entry) => entry.saveId);
-      return querySidebarCounts(await getDb(), [], ids);
+      return queryConfiguredSidebarCounts(await getDb(), [], ids);
     },
   ),
   "saves.queryPage": query(LibraryQueryParams, async (params) => {

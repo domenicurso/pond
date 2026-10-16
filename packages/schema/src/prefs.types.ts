@@ -59,7 +59,13 @@ export const DEFAULT_IMAGE_DOWNLOAD: ImageDownloadSettings = {
   maxFileSizeMb: 10,
 };
 
+export interface TwitterSyncPreferences {
+  lists: ("saved" | "liked")[];
+  content: "all" | "media";
+}
+
 export interface SourceSyncPrefs {
+  twitter?: TwitterSyncPreferences;
   lastSyncedAt: string | null;
   lastError: string | null;
   highWaterMark: string | null;

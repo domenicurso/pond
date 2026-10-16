@@ -71,7 +71,7 @@ npmRebuild: true
 
 publish:
   provider: github
-  owner: raphaelsalaja
+  owner: domenicurso
   repo: pond
   releaseType: release
 

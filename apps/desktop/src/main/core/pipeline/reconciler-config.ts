@@ -4,8 +4,8 @@ import type { ReportDownloadActivity } from "@shared/download-activity";
 import { z } from "zod";
 
 export const POLL_INTERVAL_MS = 5_000;
-export const MAX_GLOBAL_INFLIGHT = 4;
-export const MAX_BACKGROUND_INFLIGHT = 3;
+export const MAX_GLOBAL_INFLIGHT = 10;
+export const MAX_BACKGROUND_INFLIGHT = 8;
 export const MAX_INTERACTIVE_INFLIGHT = 4;
 export const PER_OP_CONCURRENCY = {
   harvest_metadata: 2,

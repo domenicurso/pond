@@ -46,6 +46,7 @@ import {
   markDone,
   maybeFinalizeSave,
 } from "./task-settlement";
+import { enforceTwitterDownloadSelection } from "./twitter-download-selection";
 
 const TaskPayloadSchema = z.json().catch(null);
 const LEASE_OWNER = `main:${process.pid}`;
@@ -334,7 +335,9 @@ function schedulePoll(ms: number): void {
 }
 
 async function tick(): Promise<void> {
-  if (!started || paused) return;
+  if (!started) return;
+  await enforceTwitterDownloadSelection(cancelSaveIngest);
+  if (paused) return;
   if (Date.now() >= nextOrphanSweepAt) {
     nextOrphanSweepAt = Date.now() + ORPHAN_SWEEP_INTERVAL_MS;
     void track(sweepOrphanTasks()).catch((err) =>
