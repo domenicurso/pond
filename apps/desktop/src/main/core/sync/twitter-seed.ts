@@ -32,26 +32,7 @@ export function buildTwitterBookmarkSeed(
   const publishedAt = legacy.success
     ? toDate(legacy.data.legacy.created_at)
     : null;
-  const author: RichPostDraft["author"] = {
-    handle:
-      rich.author.handle ||
-      (entry.author ? entry.author.replace(/^@/, "") : ""),
-    name: rich.author.name || rich.author.handle,
-  };
-  if (rich.author.avatarUrl) author.avatarUrl = rich.author.avatarUrl;
-
-  const draft: RichPostDraft = {
-    source: "twitter",
-    id: entry.tweetId,
-    url: entry.url,
-    text: rich.fullText,
-    author,
-    media: rich.media,
-    metrics: rich.metrics,
-  };
-  if (rich.quoted) draft.quoted = richQuoted(rich.quoted);
-  if (rich.card) draft.card = rich.card;
-  if (publishedAt) draft.publishedAt = publishedAt.toISOString();
+  const draft = bookmarkDraft(entry, rich, publishedAt);
 
   const capture = captureFromTweetDraft(draftFromRichPost(draft));
 
@@ -73,11 +54,40 @@ export function buildTwitterBookmarkSeed(
     author: name ?? (handle ? `@${handle}` : (entry.author ?? null)),
     mediaUrl: capture.media[0]?.url ?? media[0]?.url ?? null,
     mediaType: majorityMediaType(
-      capture.media.map((m) => (m.type === "video" ? "video" : "image")),
+      media.map((m) => (m.type === "video" ? "video" : "image")),
     ),
     publishedAt,
     lang: null,
   };
+}
+
+function bookmarkDraft(
+  entry: BookmarksEntry,
+  rich: RichTweet,
+  publishedAt: Date | null,
+): RichPostDraft {
+  const author: RichPostDraft["author"] = {
+    handle:
+      rich.author.handle ||
+      (entry.author ? entry.author.replace(/^@/, "") : ""),
+    name: rich.author.name || rich.author.handle,
+  };
+  if (rich.author.avatarUrl) author.avatarUrl = rich.author.avatarUrl;
+
+  const draft: RichPostDraft = {
+    source: "twitter",
+    id: entry.tweetId,
+    url: entry.url,
+    text: rich.fullText,
+    author,
+    media: rich.media,
+    metrics: rich.metrics,
+  };
+  if (rich.quoted) draft.quoted = richQuoted(rich.quoted);
+  if (rich.card) draft.card = rich.card;
+  if (publishedAt) draft.publishedAt = publishedAt.toISOString();
+
+  return draft;
 }
 
 function richQuoted(quoted: RichTweet): RichPostDraft {
